@@ -1,0 +1,14 @@
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\bin\Debug\net8.0\코인 기능 테스트.exe
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\bin\Debug\net8.0\코인 기능 테스트.deps.json
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\bin\Debug\net8.0\코인 기능 테스트.runtimeconfig.json
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\bin\Debug\net8.0\코인 기능 테스트.dll
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\bin\Debug\net8.0\코인 기능 테스트.pdb
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\obj\Debug\net8.0\코인 기능 테스트.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\obj\Debug\net8.0\코인 기능 테스트.AssemblyInfoInputs.cache
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\obj\Debug\net8.0\코인 기능 테스트.AssemblyInfo.cs
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\obj\Debug\net8.0\코인 기능 테스트.csproj.CoreCompileInputs.cache
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\obj\Debug\net8.0\코인 기능 테스트.dll
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\obj\Debug\net8.0\refint\코인 기능 테스트.dll
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\obj\Debug\net8.0\코인 기능 테스트.pdb
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\obj\Debug\net8.0\코인 기능 테스트.genruntimeconfig.cache
+C:\Users\si283\OneDrive\바탕 화면\시간과 정신의 방\C#\mudgame\코인 기능 테스트\코인 기능 테스트\obj\Debug\net8.0\ref\코인 기능 테스트.dll
