@@ -1,4 +1,6 @@
 using System;
+using System.Net.Sockets;
+using System.Reflection.Metadata.Ecma335;
 
 
 
@@ -9,6 +11,7 @@ class Game
     public int Gold = 1000;
     public int Day = 1;
     public string UserInput = "";
+    public int Lottery_ticket = 0;
     Random random = new Random();
     public void GameSet()
     {
@@ -33,6 +36,8 @@ class Game
             if (UserInput == "광장")
             {
                 Console.WriteLine("광장으로 이동합니다.");
+                Console.WriteLine("광장으로 이동하였습니다.");
+                Place();
                 break;
             }
             else if (UserInput == "집")
@@ -94,9 +99,8 @@ class Game
 
     public void Home()
     {
-        string UserInput = "";
         Console.WriteLine("현재 위치는 집입니다.");
-        Console.WriteLine("수면 또는 코인을 확인하시겠습니까?(수면 또는 코인을 입력하세요.)");
+        Console.WriteLine("취할 행동을 고르세요.(수면,코인,아이템을 입력하세요.)");
         UserInput = Console.ReadLine();
         while (true)
         {
@@ -124,10 +128,100 @@ class Game
                 Home();
             }
         }
+    } 
+    public void Place()
+    {
         
+        Console.WriteLine("무엇을 하시겠습니다?(아르바이트또는 복권)");
+        UserInput = Console.ReadLine();
+        if (UserInput == "아르바이트")
+        {
+            Console.WriteLine("아르바이트를 시작합니다");
+            for (int i = 0; i < 3; i++)
+            {
+                int randomGold = random.Next(300, 500);
+                Gold += randomGold;
+                Console.WriteLine($"획득한 Gold: {randomGold} (보유 자금 : {Gold})");
+            }
+            Console.WriteLine($"현재 보유 자금은 {Gold}원 입니다.");
+            Console.WriteLine("아르바이트를 하여 하루가 지나갑니다~");
+            Day += 1;
+            Console.WriteLine($"하루가 지나 {Day}일차입니다");
 
+            Home();
+        }
+        else if(UserInput == "복권")
+        {
+            Console.WriteLine("즉석복권을 구매하시겠습니까? 가격은 1000원입니다.\t(예,아니요)");
+            UserInput = Console.ReadLine();
+            if (UserInput == "예")
+            {
+                if (Gold >= 1000)
+                {
+                    Lottery_ticket += 1;
+                    Gold = Gold - 1000;
+                    Console.WriteLine($"복권을 1장 구매하였습니다.\t(보유자금 : {Gold}원");
+                    Place();
+                }
 
+                else
+                {
+                    Console.WriteLine("보유 자금이 부족합니다.");
+                    Place();
+                }
+            }
+            else if (UserInput == "나가기")
+            {
+                GameUpdate();
+            }
+            else
+            {
+                Console.WriteLine("잘못입력하였습니다");
+                Home();
+            }
 
+        }
+
+    }
+
+    public void Luck()
+    {
+        Console.WriteLine("즉석복권을 구매하였습니다.");
+        Random random = new Random();
+
+        Console.WriteLine("복권 추첨을 시작합니다!");
+
+        double[] probabilities = { 43.0, 10.2, 33.1, 5.1, 7.0, (100 - (43.0 + 10.2 + 33.1 + 5.1 + 7.0)) }; // 각 상금에 대한 확률 배열
+
+        int[] prizeValues = { 0, 500, 1000, 100, 3000, 50000 }; // 각 상금에 대응하는 금액 배열
+
+        double randomValue = random.NextDouble() * 100; // 0부터 100 사이의 랜덤 값
+
+        double cumulativeProbability = 0.0;
+        bool prizeWon = false;
+
+        // 각 상금에 대한 확률을 검사하여 당첨 여부 판정
+        for (int i = 0; i < probabilities.Length; i++)
+        {
+            cumulativeProbability += probabilities[i];
+
+            if (randomValue < cumulativeProbability)
+            {
+                // 해당 확률 범위에 속하면 해당 상금 당첨
+                Console.WriteLine($"추첨 결과: {prizeValues[i]}원 당첨!");
+                Console.WriteLine($"상금: {prizeValues[i]}원\t (보유 자금 : {Gold})");
+                Gold += prizeValues[i];
+                prizeWon = true;
+                break;
+            }
+
+        }
+        if (!prizeWon)
+        {
+            // 모든 상금 확률 범위를 통과했는데도 당첨된 상금이 없으면 꽝
+            Console.WriteLine($"추첨 결과: 꽝...");
+        }
+       
     }
 }
 
@@ -148,7 +242,7 @@ class Coin
     public void UpdatePrice()
     {
         Random rand = new Random();
-        double percentChange = rand.NextDouble() * (0.03 + 0.015) - 0.015; // -1.5%에서 3% 사이의 랜덤한 변동
+        double percentChange = rand.NextDouble() * (0.03 + 0.015) - 0.03; // -1.5%에서 3% 사이의 랜덤한 변동
         Price += Price * percentChange;
     }
 }
