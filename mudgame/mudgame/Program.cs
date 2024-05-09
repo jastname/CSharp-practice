@@ -117,6 +117,10 @@ class Game
                 Shop();
                 break;
             }
+            else if (UserInput == "가방")
+            {
+                Backpack();
+            }
             else if (UserInput == "나가기")
             {
                 Console.WriteLine("집을 나갑니다.");
@@ -152,45 +156,85 @@ class Game
         }
         else if(UserInput == "복권")
         {
-            Console.WriteLine("즉석복권을 구매하시겠습니까? 가격은 1000원입니다.\t(예,아니요)");
-            UserInput = Console.ReadLine();
-            if (UserInput == "예")
-            {
-                if (Gold >= 1000)
-                {
-                    Lottery_ticket += 1;
-                    Gold = Gold - 1000;
-                    Console.WriteLine($"복권을 1장 구매하였습니다.\t(보유자금 : {Gold}원");
-                    Place();
-                }
+            Lotto();
+        }
+        else if (UserInput == "나가기")
+        {
+            GameUpdate();
+        }
+        else
+        {
+            Console.WriteLine("잘못입력하였습니다");
+            Place();
+        }
 
-                else
-                {
-                    Console.WriteLine("보유 자금이 부족합니다.");
-                    Place();
-                }
-            }
-            else if (UserInput == "나가기")
+    }
+
+    public void Lotto()
+    {
+        Console.WriteLine("즉석복권을 구매하시겠습니까? 가격은 1000원입니다.\t(예,아니요)");
+        UserInput = Console.ReadLine();
+        if (UserInput == "예")
+        {
+            if (Gold >= 1000)
             {
-                GameUpdate();
+                Lottery_ticket += 1;
+                Gold = Gold - 1000;
+                Console.WriteLine($"복권을 1장 구매하였습니다.\t(보유자금 : {Gold}원)");
+                Place();
             }
+
             else
             {
-                Console.WriteLine("잘못입력하였습니다");
-                Home();
+                Console.WriteLine("보유 자금이 부족합니다.");
+                Place();
             }
-
         }
+        else if (UserInput == "나가기")
+        {
+            Place();
+        }
+        else
+        {
+            Console.WriteLine("잘못입력하였습니다");
+            Lotto();
+        }
+    }
+    public void Backpack()
+    {
+        Console.WriteLine("가방을 열었습니다.");
+        Console.WriteLine($"소지품\t\t보유 갯수\t (보유자금 : {Gold}원)");
+        Console.WriteLine($"즉석복권\t {Lottery_ticket}");
+        UserInput = Console.ReadLine();
+        if (UserInput == "나가기")
+        {
+            Home();
+        }
+        else if (UserInput == "복권")
+        {
+            if (Lottery_ticket == 0)
+            {
+                Console.WriteLine($"{UserInput}을 소지하지 않았습니다");
+                Backpack();
+            }
+            Luck();
+            Backpack();
+        }
+        else
+        {
+            Console.WriteLine("잘못입력하였습니다");
+            Backpack();
+        }
+
 
     }
 
     public void Luck()
     {
-        Console.WriteLine("즉석복권을 구매하였습니다.");
+        Console.WriteLine("즉석복권을 사용합니다.");
         Random random = new Random();
-
+        Lottery_ticket -= 1;
         Console.WriteLine("복권 추첨을 시작합니다!");
-
         double[] probabilities = { 43.0, 10.2, 33.1, 5.1, 7.0, (100 - (43.0 + 10.2 + 33.1 + 5.1 + 7.0)) }; // 각 상금에 대한 확률 배열
 
         int[] prizeValues = { 0, 500, 1000, 100, 3000, 50000 }; // 각 상금에 대응하는 금액 배열
@@ -209,8 +253,8 @@ class Game
             {
                 // 해당 확률 범위에 속하면 해당 상금 당첨
                 Console.WriteLine($"추첨 결과: {prizeValues[i]}원 당첨!");
-                Console.WriteLine($"상금: {prizeValues[i]}원\t (보유 자금 : {Gold})");
                 Gold += prizeValues[i];
+                Console.WriteLine($"상금: {prizeValues[i]}원\t (보유 자금 : {Gold})");
                 prizeWon = true;
                 break;
             }
