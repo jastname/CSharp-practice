@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 class Game
 {
-    private string Name;
-    private int Gold = 1000;
-    private int Day = 1;
-    private string UserInput = "";
-    private int LotteryTicket = 0;
+    public string Name { get; set; }
+    public int Gold { get; set; } = 1000;
+    public int Day { get; set; } = 1;
+    public string UserInput { get; set; } = "";
+    public int LotteryTicket { get; set; } = 0;
     private Random random = new Random();
-    private List<Coin> coins = new List<Coin>()
+    public List<Coin> Coins { get; set; } = new List<Coin>()
     {
         new Coin("Bitcoin", 50000),
         new Coin("Ethereum", 2000),
@@ -53,15 +56,15 @@ class Game
     {
         if (Day > 1)
         {
-            foreach (var coin in coins)
-                coin.UpdatePrice();
+            foreach (var coin in Coins)
+                coin.UpdatePrice(random);
         }
 
         while (true)
         {
-            Console.WriteLine("코인\t가격\t보유량");
-            for (int i = 0; i < coins.Count; i++)
-                Console.WriteLine($"{i + 1}. {coins[i].Name}\t{coins[i].Price:F2}\t{coins[i].Quantity}");
+            Console.WriteLine("코인\t\t가격\t\t보유량");
+            for (int i = 0; i < Coins.Count; i++)
+                Console.WriteLine($"{i + 1}. {Coins[i].Name}\t{Coins[i].Price:F2}\t{Coins[i].Quantity}");
 
             Console.WriteLine("s. 코인 구매, b. 코인 판매, h. 집으로 돌아가기");
             UserInput = Console.ReadLine().ToLower();
@@ -88,13 +91,13 @@ class Game
     {
         Console.WriteLine("구매할 코인을 선택하세요 (숫자 입력)");
         int choice;
-        if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= coins.Count)
+        if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= Coins.Count)
         {
             Console.WriteLine($"얼마나 구매하시겠습니까? (보유 자금: {Gold}원)");
             int quantity;
             if (int.TryParse(Console.ReadLine(), out quantity) && quantity > 0)
             {
-                Coin selectedCoin = coins[choice - 1];
+                Coin selectedCoin = Coins[choice - 1];
                 int totalPrice = (int)(selectedCoin.Price * quantity);
                 if (totalPrice <= Gold)
                 {
@@ -122,9 +125,9 @@ class Game
     {
         Console.WriteLine("판매할 코인을 선택하세요 (숫자 입력)");
         int choice;
-        if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= coins.Count)
+        if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= Coins.Count)
         {
-            Coin selectedCoin = coins[choice - 1];
+            Coin selectedCoin = Coins[choice - 1];
             if (selectedCoin.Quantity > 0)
             {
                 Console.WriteLine($"얼마나 판매하시겠습니까? (보유량: {selectedCoin.Quantity})");
@@ -155,7 +158,7 @@ class Game
     public void Home()
     {
         Console.WriteLine("현재 위치는 집입니다.");
-        Console.WriteLine("취할 행동을 고르세요.(수면, 코인, 가방, 나가기 입력)");
+        Console.WriteLine("취할 행동을 고르세요.(수면, 코인, 가방, 저장, 불러오기, 나가기 입력)");
         UserInput = Console.ReadLine().ToLower();
         switch (UserInput)
         {
@@ -170,6 +173,12 @@ class Game
                 break;
             case "가방":
                 Backpack();
+                break;
+            case "저장":
+                SaveGame();
+                break;
+            case "불러오기":
+                LoadGame();
                 break;
             case "나가기":
                 Console.WriteLine("집을 나갑니다.");
@@ -251,9 +260,9 @@ class Game
         Console.WriteLine($"소지품\t\t보유 갯수\t (보유자금 : {Gold}원)");
         Console.WriteLine($"즉석복권\t {LotteryTicket}");
         Console.WriteLine("보유 코인");
-        for (int i = 0; i < coins.Count; i++)
+        for (int i = 0; i < Coins.Count; i++)
         {
-            Console.WriteLine($"{i + 1}. {coins[i].Name}\t{coins[i].Quantity}개");
+            Console.WriteLine($"{i + 1}. {Coins[i].Name}\t{Coins[i].Quantity}개");
         }
         UserInput = Console.ReadLine().ToLower();
         switch (UserInput)
@@ -270,11 +279,54 @@ class Game
                 break;
         }
     }
+
+    public void SaveGame()
+    {
+        try
+        {
+            string jsonString = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText("savegame.json", jsonString);
+            Console.WriteLine("게임이 저장되었습니다.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"게임 저장 중 오류가 발생했습니다: {ex.Message}");
+        }
+    }
+
+    public void LoadGame()
+    {
+        try
+        {
+            if (File.Exists("savegame.json"))
+            {
+                string jsonString = File.ReadAllText("savegame.json");
+                Game loadedGame = JsonSerializer.Deserialize<Game>(jsonString);
+
+                this.Name = loadedGame.Name;
+                this.Gold = loadedGame.Gold;
+                this.Day = loadedGame.Day;
+                this.LotteryTicket = loadedGame.LotteryTicket;
+                this.Coins = loadedGame.Coins;
+
+                Console.WriteLine("게임이 불러와졌습니다.");
+                Home();
+            }
+            else
+            {
+                Console.WriteLine("저장된 게임이 없습니다.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"게임 불러오기 중 오류가 발생했습니다: {ex.Message}");
+        }
+    }
 }
 
 class Coin
 {
-    public string Name { get; }
+    public string Name { get; set; }
     public double Price { get; set; }
     public int Quantity { get; set; }
 
@@ -285,12 +337,11 @@ class Coin
         Quantity = 0;
     }
 
-    public void UpdatePrice()
+    public void UpdatePrice(Random random)
     {
-        double percentChange = (random.NextDouble() * 0.075) - 0.03; // -1.5%에서 3% 사이의 랜덤한 변동
+        double percentChange = (random.NextDouble() * 0.075) - 0.03; // -3%에서 7.5% 사이의 랜덤한 변동
         Price += Price * percentChange;
     }
-
 }
 
 class MainCode
@@ -301,5 +352,3 @@ class MainCode
         game.GameSet();
     }
 }
-
-

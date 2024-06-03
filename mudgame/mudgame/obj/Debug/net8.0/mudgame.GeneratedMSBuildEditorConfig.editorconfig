@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = mudgame
-build_property.ProjectDir = C:\Users\ALSW\Desktop\CSharp-practice-main\mudgame\mudgame\
+build_property.ProjectDir = C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

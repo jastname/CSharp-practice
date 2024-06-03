@@ -26,3 +26,17 @@ C:\Users\ALSW\Desktop\CSharp-practice-main\mudgame\mudgame\obj\Debug\net8.0\refi
 C:\Users\ALSW\Desktop\CSharp-practice-main\mudgame\mudgame\obj\Debug\net8.0\mudgame.pdb
 C:\Users\ALSW\Desktop\CSharp-practice-main\mudgame\mudgame\obj\Debug\net8.0\mudgame.genruntimeconfig.cache
 C:\Users\ALSW\Desktop\CSharp-practice-main\mudgame\mudgame\obj\Debug\net8.0\ref\mudgame.dll
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\bin\Debug\net8.0\mudgame.exe
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\bin\Debug\net8.0\mudgame.deps.json
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\bin\Debug\net8.0\mudgame.runtimeconfig.json
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\bin\Debug\net8.0\mudgame.dll
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\bin\Debug\net8.0\mudgame.pdb
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\obj\Debug\net8.0\mudgame.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\obj\Debug\net8.0\mudgame.AssemblyInfoInputs.cache
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\obj\Debug\net8.0\mudgame.AssemblyInfo.cs
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\obj\Debug\net8.0\mudgame.csproj.CoreCompileInputs.cache
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\obj\Debug\net8.0\mudgame.dll
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\obj\Debug\net8.0\refint\mudgame.dll
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\obj\Debug\net8.0\mudgame.pdb
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\obj\Debug\net8.0\mudgame.genruntimeconfig.cache
+C:\Users\AISW\Desktop\CSharp-practice-main\CSharp-practice-main\mudgame\mudgame\obj\Debug\net8.0\ref\mudgame.dll

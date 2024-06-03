@@ -1,0 +1,34 @@
+{
+  "Name": "\uC774\uC131\uBBFC",
+  "Gold": 2148,
+  "Day": 2,
+  "UserInput": "\uC800\uC7A5",
+  "LotteryTicket": 0,
+  "Coins": [
+    {
+      "Name": "Bitcoin",
+      "Price": 50562.027449397254,
+      "Quantity": 0
+    },
+    {
+      "Name": "Ethereum",
+      "Price": 1968.2332780403208,
+      "Quantity": 0
+    },
+    {
+      "Name": "Litecoin",
+      "Price": 153.67480151119202,
+      "Quantity": 0
+    },
+    {
+      "Name": "Ripple",
+      "Price": 0.9749238715810199,
+      "Quantity": 0
+    },
+    {
+      "Name": "Dogecoin",
+      "Price": 0.29393470114370934,
+      "Quantity": 100
+    }
+  ]
+}
