@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 class Game
 {
@@ -62,7 +61,7 @@ class Game
 
         while (true)
         {
-            Console.WriteLine("코인\t\t가격\t\t보유량");
+            Console.WriteLine("코인\t가격\t보유량");
             for (int i = 0; i < Coins.Count; i++)
                 Console.WriteLine($"{i + 1}. {Coins[i].Name}\t{Coins[i].Price:F2}\t{Coins[i].Quantity}");
 
@@ -282,10 +281,20 @@ class Game
 
     public void SaveGame()
     {
+        Console.WriteLine("저장할 파일 이름을 입력하세요:");
+        string fileName = Console.ReadLine();
+        string directoryPath = "saves";
+        string filePath = Path.Combine(directoryPath, $"{fileName}.json");
+
         try
         {
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
             string jsonString = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText("savegame.json", jsonString);
+            File.WriteAllText(filePath, jsonString);
             Console.WriteLine("게임이 저장되었습니다.");
         }
         catch (Exception ex)
@@ -296,11 +305,16 @@ class Game
 
     public void LoadGame()
     {
+        Console.WriteLine("불러올 파일 이름을 입력하세요:");
+        string fileName = Console.ReadLine();
+        string directoryPath = "saves";
+        string filePath = Path.Combine(directoryPath, $"{fileName}.json");
+
         try
         {
-            if (File.Exists("savegame.json"))
+            if (File.Exists(filePath))
             {
-                string jsonString = File.ReadAllText("savegame.json");
+                string jsonString = File.ReadAllText(filePath);
                 Game loadedGame = JsonSerializer.Deserialize<Game>(jsonString);
 
                 this.Name = loadedGame.Name;
