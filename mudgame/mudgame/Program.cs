@@ -56,7 +56,7 @@ class Game
         if (Day > 1)
         {
             foreach (var coin in Coins)
-                coin.UpdatePrice(random);
+                coin.UpdatePrice(random, Day);
         }
 
         while (true)
@@ -179,6 +179,7 @@ class Game
             case "불러오기":
                 LoadGame();
                 break;
+
             case "나가기":
                 Console.WriteLine("집을 나갑니다.");
                 GameUpdate();
@@ -188,6 +189,63 @@ class Game
                 Home();
                 break;
         }
+    }
+
+    public void UseItem()
+    {
+        Console.WriteLine("사용할 아이템을 선택하세요.");
+        Console.WriteLine($"즉석복권\t{LotteryTicket}개\t(각 등수 확률 및 상금은 다름)");
+        Console.WriteLine("나가기");
+
+        UserInput = Console.ReadLine().ToLower();
+        switch (UserInput)
+        {
+            case "즉석복권":
+                if (LotteryTicket > 0)
+                {
+                    LotteryTicket--;
+                    int prize = ScratchLottery();
+                    if (prize > 0)
+                    {
+                        Gold += prize;
+                        Console.WriteLine($"축하합니다! {prize}원을 획득하였습니다. (보유 자금: {Gold}원)");
+                    }
+                    else
+                    {
+                        Console.WriteLine("아쉽게도 당첨되지 않았습니다.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("즉석복권이 없습니다.");
+                }
+                UseItem();
+                break;
+            case "나가기":
+                Home();
+                break;
+            default:
+                Console.WriteLine("잘못입력하였습니다");
+                UseItem();
+                break;
+        }
+    }
+
+    public int ScratchLottery()
+    {
+        double rand = random.NextDouble();
+        if (rand < 0.01) // 1% chance for 1st prize
+            return 100000;
+        else if (rand < 0.05) // 4% chance for 2nd prize
+            return 50000;
+        else if (rand < 0.15) // 10% chance for 3rd prize
+            return 10000;
+        else if (rand < 0.35) // 10% chance for 4rd prize
+            return 1000;
+        else if (rand < 0.55) // 10% chance for 5rd prize
+            return 500;
+        else // 85% chance for no prize
+            return 0;
     }
 
     public void Place()
@@ -269,8 +327,8 @@ class Game
             case "나가기":
                 Home();
                 break;
-            case "코인":
-                Shop();
+            case "아이템사용":
+                UseItem();
                 break;
             default:
                 Console.WriteLine("잘못입력하였습니다");
@@ -351,12 +409,14 @@ class Coin
         Quantity = 0;
     }
 
-    public void UpdatePrice(Random random)
+    public void UpdatePrice(Random random, int day)
     {
-        double percentChange = (random.NextDouble() * 0.075) - 0.03; // -3%에서 7.5% 사이의 랜덤한 변동
-        Price += Price * percentChange;
+        double x = random.NextDouble() * 2 * Math.PI; // 0에서 2π까지의 랜덤 각도 (라디안)
+        double percentChange = (day * Math.Sin(x)) + 1;
+        Price += Price * percentChange / 100.0; // percentChange는 퍼센트로 변환
     }
 }
+
 
 class MainCode
 {
