@@ -61,9 +61,12 @@ class Game
 
         while (true)
         {
-            Console.WriteLine("코인\t가격\t보유량");
+            Console.WriteLine("코인\t\t가격\t\t\t보유량\t전날 대비 변동");
             for (int i = 0; i < Coins.Count; i++)
-                Console.WriteLine($"{i + 1}. {Coins[i].Name}\t{Coins[i].Price:F2}\t{Coins[i].Quantity}");
+            {
+                string change = Day > 1 ? $"{Coins[i].Price - Coins[i].PreviousPrice:F2}" : "N/A";
+                Console.WriteLine($"{i + 1}. {Coins[i].Name.PadRight(10)}\t{Coins[i].Price,10:F2}\t{Coins[i].Quantity,10}\t{change,10}");
+            }
 
             Console.WriteLine("s. 코인 구매, b. 코인 판매, h. 집으로 돌아가기");
             UserInput = Console.ReadLine().ToLower();
@@ -85,6 +88,7 @@ class Game
             }
         }
     }
+
 
     public void BuyCoin()
     {
@@ -400,17 +404,20 @@ class Coin
 {
     public string Name { get; set; }
     public double Price { get; set; }
+    public double PreviousPrice { get; set; }
     public int Quantity { get; set; }
 
     public Coin(string name, double price)
     {
         Name = name;
         Price = price;
+        PreviousPrice = price;
         Quantity = 0;
     }
 
     public void UpdatePrice(Random random, int day)
     {
+        PreviousPrice = Price;
         double x = random.NextDouble() * 2 * Math.PI; // 0에서 2π까지의 랜덤 각도 (라디안)
         double percentChange = (day * Math.Sin(x)) + 1;
         Price += Price * percentChange / 100.0; // percentChange는 퍼센트로 변환
