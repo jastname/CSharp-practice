@@ -6,7 +6,7 @@ using System.Text.Json;
 class Game
 {
     public string Name { get; set; }
-    public int Gold { get; set; } = 1000;
+    public int Gold { get; set; } = 10000;
     public int Day { get; set; } = 1;
     public string UserInput { get; set; } = "";
     public int LotteryTicket { get; set; } = 0;
@@ -14,10 +14,18 @@ class Game
     public List<Coin> Coins { get; set; } = new List<Coin>()
     {
         new Coin("Bitcoin", 50000),
-        new Coin("Ethereum", 2000),
-        new Coin("Litecoin", 150),
-        new Coin("Ripple", 1),
-        new Coin("Dogecoin", 0.3)
+        new Coin("Ethereum", 20000),
+        new Coin("Litecoin", 1500),
+        new Coin("Ripple", 100),
+        new Coin("Dogecoin", 3)
+    };
+    public List<Coin> NewCoins { get; set; } = new List<Coin>()
+    {
+        new Coin("Polkadot", 300),
+        new Coin("Cardano", 10.5),
+        new Coin("Chainlink", 8000),
+        new Coin("Shiba_inu", 5),
+        new Coin("pepe", 4000)
     };
 
     public void GameSet()
@@ -32,73 +40,129 @@ class Game
     {
         while (true)
         {
-            Console.WriteLine($"이동할 장소를 선택하세요(광장, 집)\t현재:{Day}일차");
-            UserInput = Console.ReadLine().ToLower();
-            switch (UserInput)
+            if (Day > 80)
             {
-                case "광장":
-                    Console.WriteLine("광장으로 이동합니다.");
-                    Place();
-                    return;
-                case "집":
-                    Console.WriteLine("집으로 이동합니다.");
-                    Home();
-                    return;
-                default:
-                    Console.WriteLine("이동할 장소를 잘못입력하였습니다.");
-                    break;
+                EndGame();
+                break;
+            }
+
+            DisplayCurrentDay();
+            AddNewCoin();
+            GetLocationInput();
+        }
+    }
+
+    private void DisplayCurrentDay()
+    {
+        Console.WriteLine($"이동할 장소를 선택하세요(광장, 집)\t현재:{Day}일차");
+    }
+
+    private void AddNewCoin()
+    {
+        double newCoinProbability = 0.05; // 5% 확률로 새로운 코인 추가
+        if (random.NextDouble() < newCoinProbability && NewCoins.Count > 0)
+        {
+            Coin newCoin = NewCoins[0];
+            Coins.Add(newCoin);
+            NewCoins.RemoveAt(0);
+            Console.WriteLine($"{newCoin.Name} 코인이 새로 상장되었습니다!");
+        }
+    }
+
+    private void GetLocationInput()
+    {
+        UserInput = Console.ReadLine().ToLower();
+        switch (UserInput)
+        {
+            case "광장":
+                MoveToSquare();
+                break;
+            case "집":
+                MoveToHome();
+                break;
+            default:
+                InvalidLocationInput();
+                break;
+        }
+    }
+
+    private void MoveToSquare()
+    {
+        Console.WriteLine("광장으로 이동합니다.");
+        Place();
+    }
+
+    private void MoveToHome()
+    {
+        Console.WriteLine("집으로 이동합니다.");
+        Home();
+    }
+
+    private void InvalidLocationInput()
+    {
+        Console.WriteLine("이동할 장소를 잘못입력하였습니다.");
+    }
+
+    private void UpdateCoinPrices()
+    {
+        for (int i = Coins.Count - 1; i >= 0; i--)
+        {
+            Coins[i].UpdatePrice(random, Day);
+            if (Coins[i].IsDelisted)
+            {
+                Coins.RemoveAt(i);
             }
         }
     }
 
     public void Shop()
     {
-        if (Day > 1)
-        {
-            foreach (var coin in Coins)
-                coin.UpdatePrice(random, Day);
-        }
-
         while (true)
         {
-            Console.WriteLine("코인\t\t가격\t\t\t보유량\t전날 대비 변동");
-            for (int i = 0; i < Coins.Count; i++)
-            {
-                string change = Day > 1 ? $"{Coins[i].Price - Coins[i].PreviousPrice:F2}" : "N/A";
-                Console.WriteLine($"{i + 1}. {Coins[i].Name.PadRight(10)}\t{Coins[i].Price,10:F2}\t{Coins[i].Quantity,10}\t{change,10}");
-            }
-
-            Console.WriteLine("s. 코인 구매, b. 코인 판매, h. 집으로 돌아가기");
-            UserInput = Console.ReadLine().ToLower();
-            switch (UserInput)
-            {
-                case "s":
-                    BuyCoin();
-                    break;
-                case "b":
-                    SellCoin();
-                    break;
-                case "h":
-                    Console.WriteLine("집으로 이동합니다.");
-                    Home();
-                    return;
-                default:
-                    Console.WriteLine("잘못입력하였습니다.");
-                    break;
-            }
+            DisplayShop();
+            GetShopAction();
         }
     }
 
+    private void DisplayShop()
+    {
+        Console.WriteLine("코인\t\t가격\t\t\t보유량\t변동가격");
+        for (int i = 0; i < Coins.Count; i++)
+        {
+            string change = Day > 1 ? $"{Coins[i].Price - Coins[i].PreviousPrice:F2}" : "N/A";
+            Console.WriteLine($"{i + 1}. {Coins[i].Name.PadRight(10)}\t{Coins[i].Price,10:F2}\t{Coins[i].Quantity,10}\t{change,10}");
+        }
+        Console.WriteLine("s. 코인 구매, b. 코인 판매, h. 집으로 돌아가기");
+    }
+
+    private void GetShopAction()
+    {
+        UserInput = Console.ReadLine().ToLower();
+        switch (UserInput)
+        {
+            case "s" or "ㄴ":
+                BuyCoin();
+                break;
+            case "b" or "ㅠ":
+                SellCoin();
+                break;
+            case "h" or "ㅗ":
+                Console.WriteLine("집으로 이동합니다.");
+                Home();
+                break;
+            default:
+                Console.WriteLine("잘못입력하였습니다.");
+                break;
+        }
+    }
 
     public void BuyCoin()
     {
         Console.WriteLine("구매할 코인을 선택하세요 (숫자 입력)");
-        int choice;
-        if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= Coins.Count)
+        if (int.TryParse(Console.ReadLine(), out int choice) && choice >= 1 && choice <= Coins.Count)
         {
             Console.WriteLine($"얼마나 구매하시겠습니까? (보유 자금: {Gold}원)");
-            int quantity;
-            if (int.TryParse(Console.ReadLine(), out quantity) && quantity > 0)
+            if (int.TryParse(Console.ReadLine(), out int quantity) && quantity > 0)
             {
                 Coin selectedCoin = Coins[choice - 1];
                 int totalPrice = (int)(selectedCoin.Price * quantity);
@@ -127,15 +191,13 @@ class Game
     public void SellCoin()
     {
         Console.WriteLine("판매할 코인을 선택하세요 (숫자 입력)");
-        int choice;
-        if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= Coins.Count)
+        if (int.TryParse(Console.ReadLine(), out int choice) && choice >= 1 && choice <= Coins.Count)
         {
             Coin selectedCoin = Coins[choice - 1];
             if (selectedCoin.Quantity > 0)
             {
                 Console.WriteLine($"얼마나 판매하시겠습니까? (보유량: {selectedCoin.Quantity})");
-                int quantity;
-                if (int.TryParse(Console.ReadLine(), out quantity) && quantity > 0 && quantity <= selectedCoin.Quantity)
+                if (int.TryParse(Console.ReadLine(), out int quantity) && quantity > 0 && quantity <= selectedCoin.Quantity)
                 {
                     int totalPrice = (int)(selectedCoin.Price * quantity);
                     Gold += totalPrice;
@@ -161,21 +223,37 @@ class Game
     public void Home()
     {
         Console.WriteLine("현재 위치는 집입니다.");
+        while (true)
+        {
+            if (Day > 80)
+            {
+                EndGame();
+                break;
+            }
+
+            DisplayHomeActions();
+            GetHomeActionInput();
+        }
+    }
+
+    private void DisplayHomeActions()
+    {
         Console.WriteLine("취할 행동을 고르세요.(수면, 코인, 가방, 저장, 불러오기, 나가기 입력)");
+    }
+
+    private void GetHomeActionInput()
+    {
         UserInput = Console.ReadLine().ToLower();
         switch (UserInput)
         {
             case "수면":
-                Day++;
-                Console.WriteLine($"하루가 지나 {Day}일차입니다");
-                Home();
+                Sleep();
                 break;
             case "코인":
-                Console.WriteLine("코인을 확인합니다.");
-                Shop();
+                DisplayCoins();
                 break;
             case "가방":
-                Backpack();
+                DisplayBackpack();
                 break;
             case "저장":
                 SaveGame();
@@ -183,47 +261,55 @@ class Game
             case "불러오기":
                 LoadGame();
                 break;
-
             case "나가기":
-                Console.WriteLine("집을 나갑니다.");
-                GameUpdate();
+                ExitHome();
                 break;
             default:
-                Console.WriteLine("잘못입력하였습니다");
-                Home();
+                InvalidHomeActionInput();
                 break;
         }
+    }
+
+    private void Sleep()
+    {
+        Day++;
+        UpdateCoinPrices();
+        Console.WriteLine($"하루가 지나 {Day}일차입니다");
+    }
+
+    private void DisplayCoins()
+    {
+        Console.WriteLine("코인을 확인합니다.");
+        Shop();
+    }
+
+    private void DisplayBackpack()
+    {
+        Backpack();
+    }
+
+    private void ExitHome()
+    {
+        Console.WriteLine("집을 나갑니다.");
+        GameUpdate();
+    }
+
+    private void InvalidHomeActionInput()
+    {
+        Console.WriteLine("잘못입력하였습니다");
     }
 
     public void UseItem()
     {
         Console.WriteLine("사용할 아이템을 선택하세요.");
-        Console.WriteLine($"즉석복권\t{LotteryTicket}개\t(각 등수 확률 및 상금은 다름)");
+        Console.WriteLine($"즉석복권\t{LotteryTicket}개");
         Console.WriteLine("나가기");
 
         UserInput = Console.ReadLine().ToLower();
         switch (UserInput)
         {
             case "즉석복권":
-                if (LotteryTicket > 0)
-                {
-                    LotteryTicket--;
-                    int prize = ScratchLottery();
-                    if (prize > 0)
-                    {
-                        Gold += prize;
-                        Console.WriteLine($"축하합니다! {prize}원을 획득하였습니다. (보유 자금: {Gold}원)");
-                    }
-                    else
-                    {
-                        Console.WriteLine("아쉽게도 당첨되지 않았습니다.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("즉석복권이 없습니다.");
-                }
-                UseItem();
+                UseLotteryTicket();
                 break;
             case "나가기":
                 Home();
@@ -235,20 +321,43 @@ class Game
         }
     }
 
+    private void UseLotteryTicket()
+    {
+        if (LotteryTicket > 0)
+        {
+            LotteryTicket--;
+            int prize = ScratchLottery();
+            if (prize > 0)
+            {
+                Gold += prize;
+                Console.WriteLine($"축하합니다! {prize}원을 획득하였습니다. (보유 자금: {Gold}원)");
+            }
+            else
+            {
+                Console.WriteLine("아쉽게도 당첨되지 않았습니다.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("즉석복권이 없습니다.");
+        }
+        UseItem();
+    }
+
     public int ScratchLottery()
     {
         double rand = random.NextDouble();
-        if (rand < 0.01) // 1% chance for 1st prize
-            return 100000;
-        else if (rand < 0.05) // 4% chance for 2nd prize
+        if (rand < 0.01)
+            return 1000000;
+        else if (rand < 0.05)
+            return 200000;
+        else if (rand < 0.15)
             return 50000;
-        else if (rand < 0.15) // 10% chance for 3rd prize
-            return 10000;
-        else if (rand < 0.35) // 10% chance for 4rd prize
+        else if (rand < 0.35)
+            return 5000;
+        else if (rand < 0.55)
             return 1000;
-        else if (rand < 0.55) // 10% chance for 5rd prize
-            return 500;
-        else // 85% chance for no prize
+        else
             return 0;
     }
 
@@ -259,18 +368,7 @@ class Game
         switch (UserInput)
         {
             case "아르바이트":
-                Console.WriteLine("아르바이트를 시작합니다");
-                for (int i = 0; i < 3; i++)
-                {
-                    int randomGold = random.Next(300, 500);
-                    Gold += randomGold;
-                    Console.WriteLine($"획득한 Gold: {randomGold} (보유 자금 : {Gold})");
-                }
-                Console.WriteLine($"현재 보유 자금은 {Gold}원 입니다.");
-                Console.WriteLine("아르바이트를 하여 하루가 지나갑니다~");
-                Day++;
-                Console.WriteLine($"하루가 지나 {Day}일차입니다");
-                Home();
+                PartTimeJob();
                 break;
             case "복권":
                 Lotto();
@@ -285,25 +383,31 @@ class Game
         }
     }
 
+    private void PartTimeJob()
+    {
+        Console.WriteLine("아르바이트를 시작합니다");
+        for (int i = 0; i < 3; i++)
+        {
+            int randomGold = random.Next(300, 3000);
+            Gold += randomGold;
+            Console.WriteLine($"획득한 Gold: {randomGold} (보유 자금 : {Gold})");
+        }
+        Console.WriteLine($"현재 보유 자금은 {Gold}원 입니다.");
+        Console.WriteLine("아르바이트를 하여 하루가 지나갑니다~");
+        Day++;
+        UpdateCoinPrices();
+        Console.WriteLine($"하루가 지나 {Day}일차입니다");
+        Home();
+    }
+
     public void Lotto()
     {
-        Console.WriteLine("즉석복권을 구매하시겠습니까? 가격은 1000원입니다.\t(예, 아니요)");
+        Console.WriteLine("즉석복권을 구매하시겠습니까? 가격은 5000원입니다.\t(예, 아니요)");
         UserInput = Console.ReadLine().ToLower();
         switch (UserInput)
         {
             case "예":
-                if (Gold >= 1000)
-                {
-                    LotteryTicket++;
-                    Gold -= 1000;
-                    Console.WriteLine($"복권을 1장 구매하였습니다.\t(보유자금 : {Gold}원)");
-                    Place();
-                }
-                else
-                {
-                    Console.WriteLine("보유 자금이 부족합니다.");
-                    Place();
-                }
+                BuyLotteryTicket();
                 break;
             case "나가기":
                 Place();
@@ -312,6 +416,22 @@ class Game
                 Console.WriteLine("잘못입력하였습니다");
                 Lotto();
                 break;
+        }
+    }
+
+    private void BuyLotteryTicket()
+    {
+        if (Gold >= 1000)
+        {
+            LotteryTicket++;
+            Gold -= 1000;
+            Console.WriteLine($"복권을 1장 구매하였습니다.\t(보유자금 : {Gold}원)");
+            Place();
+        }
+        else
+        {
+            Console.WriteLine("보유 자금이 부족합니다.");
+            Place();
         }
     }
 
@@ -325,6 +445,11 @@ class Game
         {
             Console.WriteLine($"{i + 1}. {Coins[i].Name}\t{Coins[i].Quantity}개");
         }
+        GetBackpackAction();
+    }
+
+    private void GetBackpackAction()
+    {
         UserInput = Console.ReadLine().ToLower();
         switch (UserInput)
         {
@@ -384,6 +509,7 @@ class Game
                 this.Day = loadedGame.Day;
                 this.LotteryTicket = loadedGame.LotteryTicket;
                 this.Coins = loadedGame.Coins;
+                this.NewCoins = loadedGame.NewCoins;
 
                 Console.WriteLine("게임이 불러와졌습니다.");
                 Home();
@@ -398,6 +524,13 @@ class Game
             Console.WriteLine($"게임 불러오기 중 오류가 발생했습니다: {ex.Message}");
         }
     }
+
+    public void EndGame()
+    {
+        Console.WriteLine("축하합니다! 80일차가 완료되었습니다. 게임이 종료됩니다.");
+        Console.WriteLine($"최종 보유 자금: {Gold}원");
+        Environment.Exit(0);
+    }
 }
 
 class Coin
@@ -406,6 +539,7 @@ class Coin
     public double Price { get; set; }
     public double PreviousPrice { get; set; }
     public int Quantity { get; set; }
+    public bool IsDelisted { get; set; }
 
     public Coin(string name, double price)
     {
@@ -413,17 +547,36 @@ class Coin
         Price = price;
         PreviousPrice = price;
         Quantity = 0;
+        IsDelisted = false;
     }
 
     public void UpdatePrice(Random random, int day)
     {
         PreviousPrice = Price;
-        double x = random.NextDouble() * 2 * Math.PI; // 0에서 2π까지의 랜덤 각도 (라디안)
-        double percentChange = (day * Math.Sin(x)) + 1;
-        Price += Price * percentChange / 100.0; // percentChange는 퍼센트로 변환
+        double trend = 0.1; // 장기적인 상승 추세 반영 (예: 매일 0.1% 상승)
+        double dailyVolatility = random.NextDouble() * 0.2 - 0.1; // -10% ~ +10% 변동
+
+        // 큰 변동 이벤트 발생 확률 (5%)
+        bool isMajorEvent = random.NextDouble() < 0.05;
+        if (isMajorEvent)
+        {
+            // 큰 변동은 ±30% 범위 내
+            dailyVolatility = random.NextDouble() * 0.6 - 0.3;
+            Console.WriteLine($"{Name}의 가격이 크게 변동했습니다!");
+        }
+
+        double percentChange = trend + dailyVolatility;
+        Price += Price * percentChange / 100.0;
+
+        // 가격이 0 이하로 내려가면 상장 폐지
+        if (Price <= 0.01)
+        {
+            IsDelisted = true;
+            Price = 0.00; //0원으로 고정
+            Console.WriteLine($"{Name}은(는) 상장 폐지되었습니다.");
+        }
     }
 }
-
 
 class MainCode
 {
